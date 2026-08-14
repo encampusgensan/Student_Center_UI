@@ -1,0 +1,43 @@
+<nz-layout class="app-layout">
+	<nz-header class="app-header">
+		<div class="logo-brand">
+			<img
+				height="60px"
+				src="../../../assets/ENC-Logo.png"
+				alt="Student Center Logo"
+			/>
+		</div>
+
+		<div class="header-actions">
+			<button nz-button nzType="text" class="btn-login" (click)="gotoLogin()">
+				Login
+			</button>
+			<button
+				nz-button
+				nzType="primary"
+				class="btn-register"
+				(click)="gotoRegister()"
+			>
+				Register
+			</button>
+		</div>
+	</nz-header>
+
+	<nz-content class="app-content">
+		<div class="hero-content">
+			<h1>Why the Campus?</h1>
+
+			<p class="primary-text">
+				Students are the future and have the ability to impact the world around
+				them, no matter what degree they choose.
+			</p>
+
+			<p class="secondary-text">
+				If we want to change the world, we should start on the campus.
+			</p>
+		</div>
+	</nz-content>
+	<nz-footer class="app-footer">
+		&copy; Copyright {{ yearNow }}. All Rights Reserved.
+	</nz-footer>
+</nz-layout>

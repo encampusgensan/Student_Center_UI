@@ -1,0 +1,264 @@
+<div class="profile-page">
+	<div class="profile-card">
+		<div nz-row nzAlign="middle">
+			<div nz-col nzSpan="18">
+				<h2 nz-typography class="profile-title">Profile Settings</h2>
+				<p nz-typography nzType="secondary" class="profile-subtitle">
+					Update your personal information and security credentials
+				</p>
+			</div>
+			<div nz-col nzSpan="6" class="logout-col">
+				<button
+					nz-button
+					nzType="default"
+					nzShape="round"
+					nzBlock
+					type="button"
+					nzDanger
+					(click)="logout()"
+				>
+					Logout
+				</button>
+			</div>
+		</div>
+
+		@if (isAdmin()) {
+		<button
+			nz-button
+			nzType="primary"
+			[nzLoading]="registering()"
+			(click)="onRegisterKiosk()"
+		>
+			Register This Device as Kiosk
+		</button>
+		}
+
+		<form [formGroup]="form" class="profile-form">
+			<!-- ================= PERSONAL INFORMATION & CREDENTIALS ================= -->
+			<div formGroupName="profile">
+				<div class="form-section-title">Personal Information</div>
+
+				<div class="form-row">
+					<div class="form-field">
+						<label nz-typography>
+							First Name
+							<span class="required">*</span>
+						</label>
+						<input
+							nz-input
+							appUppercase
+							formControlName="firstName"
+							type="text"
+							placeholder="John"
+							[nzStatus]="isFieldInvalid('profile.firstName') ? 'error' : ''"
+						/>
+						@if (isFieldInvalid('profile.firstName')) {
+						<span nz-typography nzType="danger">
+							<small>First name is required</small>
+						</span>
+						}
+					</div>
+
+					<div class="form-field">
+						<label nz-typography>Middle Name</label>
+						<input
+							nz-input
+							appUppercase
+							formControlName="middleName"
+							type="text"
+							placeholder="Optional"
+						/>
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="form-field">
+						<label nz-typography>
+							Last Name
+							<span class="required">*</span>
+						</label>
+						<input
+							nz-input
+							appUppercase
+							formControlName="lastName"
+							type="text"
+							placeholder="Doe"
+							[nzStatus]="isFieldInvalid('profile.lastName') ? 'error' : ''"
+						/>
+						@if (isFieldInvalid('profile.lastName')) {
+						<span nz-typography nzType="danger">
+							<small>Last name is required</small>
+						</span>
+						}
+					</div>
+
+					<div class="form-field">
+						<label nz-typography>
+							Mobile Number
+							<span class="required">*</span>
+						</label>
+						<input
+							nz-input
+							formControlName="mobileNum"
+							type="tel"
+							placeholder="+1234567890"
+							[nzStatus]="isFieldInvalid('profile.mobileNum') ? 'error' : ''"
+						/>
+						@if (isFieldInvalid('profile.mobileNum')) {
+						<span nz-typography nzType="danger">
+							<small>Mobile number is required</small>
+						</span>
+						}
+					</div>
+				</div>
+
+				<div class="form-field">
+					<label nz-typography>
+						Birth Date
+						<span class="required">*</span>
+					</label>
+					<nz-date-picker
+						formControlName="birthDate"
+						nzFormat="yyyy-MM-dd"
+						class="full-width-picker"
+						[nzStatus]="isFieldInvalid('profile.birthDate') ? 'error' : ''"
+					></nz-date-picker>
+					@if (isFieldInvalid('profile.birthDate')) {
+					<span nz-typography nzType="danger">
+						<small>Birth date is required</small>
+					</span>
+					}
+				</div>
+
+				<div class="form-section-title">Account Credentials</div>
+
+				<div class="form-field">
+					<label nz-typography>
+						Email Address
+						<span class="required">*</span>
+					</label>
+					<input
+						nz-input
+						formControlName="email"
+						type="email"
+						placeholder="name@example.com"
+						[nzStatus]="isFieldInvalid('profile.email') ? 'error' : ''"
+					/>
+					@if (form.get('profile.email')?.hasError('email') &&
+					form.get('profile.email')?.touched) {
+					<span nz-typography nzType="danger">
+						<small>Invalid email format</small>
+					</span>
+					} @else if (isFieldInvalid('profile.email')) {
+					<span nz-typography nzType="danger">
+						<small>Email is required</small>
+					</span>
+					}
+				</div>
+
+				<div class="profile-actions">
+					<button
+						nz-button
+						nzType="primary"
+						nzShape="round"
+						class="btn-save"
+						type="button"
+						[disabled]="form.get('profile')?.invalid"
+						(click)="saveProfile()"
+					>
+						Save Changes
+					</button>
+				</div>
+			</div>
+
+			<nz-divider />
+
+			<!-- ================= CHANGE PASSWORD SECTION ================= -->
+			<div formGroupName="passwordGroup">
+				<div class="form-section-title">
+					Change Password
+					<small class="section-subtitle">(Leave blank to keep current)</small>
+				</div>
+
+				<div class="form-field">
+					<label nz-typography>New Password</label>
+					<input
+						nz-input
+						formControlName="password"
+						type="password"
+						placeholder="Enter new password"
+						(input)="form.get('passwordGroup.confirmPassword')?.updateValueAndValidity()"
+					/>
+					@if (form.get('passwordGroup.password')?.touched &&
+					form.get('passwordGroup.password')?.invalid) {
+					<ul class="password-hints">
+						@if (form.get('passwordGroup.password')?.hasError('required')) {
+						<li nz-typography nzType="danger">
+							<small>Password is required</small>
+						</li>
+						} @if (form.get('passwordGroup.password')?.hasError('minlength')) {
+						<li nz-typography nzType="danger">
+							<small>Must be at least 8 characters</small>
+						</li>
+						} @if
+						(form.get('passwordGroup.password')?.hasError('requiresUppercase'))
+						{
+						<li nz-typography nzType="danger">
+							<small>Must include an uppercase letter</small>
+						</li>
+						} @if
+						(form.get('passwordGroup.password')?.hasError('requiresLowercase'))
+						{
+						<li nz-typography nzType="danger">
+							<small>Must include a lowercase letter</small>
+						</li>
+						} @if
+						(form.get('passwordGroup.password')?.hasError('requiresNumber')) {
+						<li nz-typography nzType="danger">
+							<small>Must include a number</small>
+						</li>
+						} @if
+						(form.get('passwordGroup.password')?.hasError('requiresSpecialChar'))
+						{
+						<li nz-typography nzType="danger">
+							<small>Must include a special character</small>
+						</li>
+						}
+					</ul>
+					}
+				</div>
+
+				<div class="form-field">
+					<label nz-typography>Confirm New Password</label>
+					<input
+						nz-input
+						formControlName="confirmPassword"
+						type="password"
+						placeholder="Confirm new password"
+						[nzStatus]="(form.get('passwordGroup')?.hasError('passwordMismatch') || isFieldInvalid('passwordGroup.confirmPassword')) && form.get('passwordGroup.confirmPassword')?.touched ? 'error' : ''"
+					/>
+					@if (form.get('passwordGroup')?.hasError('passwordMismatch') &&
+					form.get('passwordGroup.confirmPassword')?.touched) {
+					<span nz-typography nzType="danger">
+						<small>Passwords do not match</small>
+					</span>
+					}
+				</div>
+
+				<div class="button-container">
+					<button
+						nz-button
+						nzType="default"
+						nzShape="round"
+						class="action-btn"
+						type="button"
+						[disabled]="form.get('passwordGroup')?.invalid"
+						(click)="updatePassword()"
+					>
+						Update Password
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

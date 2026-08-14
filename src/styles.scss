@@ -1,0 +1,295 @@
+/* ==========================================================================
+   1. GLOBAL ANT DESIGN SYSTEM INITIALIZATION
+   ========================================================================== */
+@use "ng-zorro-antd/ng-zorro-antd.min.css";
+
+/* ==========================================================================
+   2. GOOGLE FONTS
+   --------------------------------------------------------------------------
+   NOTE: moved the actual fetch out of here. A CSS @import for a Google Fonts
+   URL is a render-blocking network request that fires only after this
+   stylesheet itself has loaded and been parsed — it delays first paint more
+   than it needs to. Put this in index.html instead so the browser can
+   discover and start it immediately:
+
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700&display=swap" rel="stylesheet">
+
+   Also narrowed the weight range from 100..900 (the full variable axis) to
+   just the weights actually used below (400/500/600/700) — that's a
+   meaningfully smaller download, which matters more on a kiosk device that
+   may be on constrained on-prem LAN/Wi-Fi rather than a fast uncapped line.
+   ========================================================================== */
+
+/* ==========================================================================
+   3. DESIGN TOKENS & PALETTE VARIABLES
+   --------------------------------------------------------------------------
+   Colors are defined once as SCSS variables, then exposed as CSS custom
+   properties so both this file and component-level styles/ng-zorro can
+   reference the *same* token instead of components hardcoding hex values.
+   ========================================================================== */
+$bg-ivory: #fdfbf7;
+$text-charcoal: #1c1b1a; // Rich, warm dark charcoal (excellent contrast with ivory)
+$text-charcoal-muted: #54524f; // Muted version for secondary text/labels
+
+// Indigo palette — sourced from the onboarding/login/register Figma reference.
+// Used for headings, primary buttons, focused input borders, and links on
+// the auth screens (login/register/forgot-password), layered on top of the
+// existing ivory/charcoal base rather than replacing it app-wide.
+$primary-indigo: #4150d6; // buttons, focus rings
+$primary-indigo-heading: #4a5ae8; // slightly brighter — used for large headings like "Login here"
+$input-fill: #f1f2fa; // idle input background
+$input-border-idle: #e3e5f2;
+$placeholder-gray: #9295a8;
+$social-btn-bg: #f0f1f5;
+
+// Spacing scale — reach for these instead of ad-hoc px/rem values in components
+$space-xs: 0.25rem;
+$space-sm: 0.5rem;
+$space-md: 1rem;
+$space-lg: 1.5rem;
+$space-xl: 2.5rem;
+
+$radius-sm: 6px;
+$radius-md: 10px;
+$radius-pill: 16px; // buttons/inputs on the auth screens — matches the rounded, friendly look in the reference
+
+:root {
+    /* Injecting our custom colors directly into NG-ZORRO v21 design tokens */
+    --ant-layout-body-bg: #{$bg-ivory};
+    --ant-component-background: #{$bg-ivory};
+    --ant-text-color: #{$text-charcoal};
+    --ant-text-color-secondary: #{$text-charcoal-muted};
+    /* Was implicitly antd's default blue — pointing it at our own indigo so
+       nz-button[type=primary], links, and focus rings all pick it up without
+       every component needing to override it individually. */
+    --ant-primary-color: #{$primary-indigo};
+
+    /* Same tokens, exposed generically for our own components (not just antd) */
+    --bg-ivory: #{$bg-ivory};
+    --text-charcoal: #{$text-charcoal};
+    --text-charcoal-muted: #{$text-charcoal-muted};
+    /* rgb triplet (no # or rgb()) so components can build translucent
+       overlays with rgba(var(--text-charcoal-rgb), <alpha>) without
+       depending on newer relative-color-syntax browser support */
+    --text-charcoal-rgb: 28, 27, 26;
+
+    --primary-indigo: #{$primary-indigo};
+    --primary-indigo-heading: #{$primary-indigo-heading};
+    --input-fill: #{$input-fill};
+    --input-border-idle: #{$input-border-idle};
+    --placeholder-gray: #{$placeholder-gray};
+    --social-btn-bg: #{$social-btn-bg};
+
+    --space-xs: #{$space-xs};
+    --space-sm: #{$space-sm};
+    --space-md: #{$space-md};
+    --space-lg: #{$space-lg};
+    --space-xl: #{$space-xl};
+
+    --radius-sm: #{$radius-sm};
+    --radius-md: #{$radius-md};
+    --radius-pill: #{$radius-pill};
+}
+
+/* ==========================================================================
+   4. BROWSER RESET & BOX MODEL STANDARD
+   ========================================================================== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Respect OS-level "reduce motion" instead of forcing smooth-scroll/transitions
+   on everyone — matters for the vestibular-sensitive, and costs nothing for
+   everyone else. */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ==========================================================================
+   5. BASE APP LAYOUT ENVIRONMENT
+   ========================================================================== */
+html,
+body {
+    width: 100%;
+    height: 100%;
+    background-color: $bg-ivory;
+    color: $text-charcoal;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    scroll-behavior: smooth;
+}
+
+/* Standardized Typography Defaults */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: $text-charcoal;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    /* Tightens sleek display headers slightly */
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+
+    &:hover {
+        color: var(--ant-primary-color);
+    }
+}
+
+/* ==========================================================================
+   6. FOCUS VISIBILITY
+   --------------------------------------------------------------------------
+   The box-model reset above doesn't touch outlines, so browsers' default
+   focus rings still show — good. This just makes them consistent with the
+   palette and only shows for keyboard/assistive input (:focus-visible),
+   not on every mouse/touch click. Worth keeping even on a touch kiosk: any
+   attached barcode scanner, external keyboard, or accessibility switch
+   device drives focus, not touch.
+   ========================================================================== */
+:focus-visible {
+    outline: 2px solid var(--ant-primary-color, #{$text-charcoal});
+    outline-offset: 2px;
+}
+
+/* Buttons/links/inputs commonly get outline: none from resets or component
+   libraries — make sure it comes back for focus-visible specifically. */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--ant-primary-color, #{$text-charcoal});
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   7. AUTH SCREEN COMPONENTS
+   --------------------------------------------------------------------------
+   Reusable classes for the login/register/forgot-password screens, matching
+   the onboarding Figma reference (rounded pill buttons & inputs, indigo
+   accent, light social-login row). Apply these in the component templates
+   rather than re-declaring the same rules per component.
+   ========================================================================== */
+.btn-pill-primary {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    border: none;
+    border-radius: var(--radius-pill);
+    background: var(--primary-indigo);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 8px 20px -6px rgba(var(--text-charcoal-rgb), 0.35);
+    cursor: pointer;
+    transition: filter 0.15s ease-in-out, transform 0.1s ease-in-out;
+
+    &:hover {
+        filter: brightness(1.08);
+    }
+
+    &:active {
+        transform: translateY(1px);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        filter: none;
+    }
+}
+
+.input-pill {
+    width: 100%;
+    padding: 0.875rem 1.125rem;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid var(--input-border-idle);
+    background: var(--input-fill);
+    color: var(--text-charcoal);
+    font-size: 1rem;
+
+    &::placeholder {
+        color: var(--placeholder-gray);
+    }
+
+    &:focus {
+        outline: none;
+        border-color: var(--primary-indigo);
+        background: #fff;
+    }
+}
+
+.social-btn-row {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-md);
+}
+
+.social-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: var(--social-btn-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: filter 0.15s ease-in-out;
+
+    &:hover {
+        filter: brightness(0.96);
+    }
+}
+
+.auth-heading {
+    color: var(--primary-indigo-heading);
+    font-weight: 700;
+}
+
+.auth-link {
+    color: var(--primary-indigo);
+    font-weight: 600;
+
+    &:hover {
+        color: var(--primary-indigo-heading);
+    }
+}
+
+/* ==========================================================================
+   8. UTILITIES
+   ========================================================================== */
+/* Visually hides content while keeping it in the accessibility tree — for
+   screen-reader-only text (e.g. status announcements next to a visual spinner). */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}

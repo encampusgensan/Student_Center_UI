@@ -1,0 +1,77 @@
+<div class="login-page">
+	<div class="login-card">
+		<h2 nz-typography class="login-title">Welcome Back</h2>
+		<p nz-typography nzType="secondary" class="login-subtitle">
+			Sign in to continue to your account
+		</p>
+
+		<form [formGroup]="form" class="login-form" autocomplete="off">
+			<div class="form-field">
+				<label nz-typography>Email</label>
+				<input
+					nz-input
+					formControlName="email"
+					type="email"
+					placeholder="name@example.com"
+					[nzStatus]="
+            form.controls['email'].invalid &&
+            form.controls['email'].touched
+              ? 'error'
+              : ''
+          "
+				/>
+				@if (form.controls['email'].hasError('email') &&
+				form.controls['email'].touched) {
+				<span nz-typography nzType="danger">
+					<small>Email is invalid</small>
+				</span>
+				}
+			</div>
+
+			<div class="form-field">
+				<label nz-typography>Password</label>
+				<input
+					nz-input
+					formControlName="password"
+					type="password"
+					placeholder="Enter password"
+					[nzStatus]="
+            form.controls['password'].invalid &&
+            form.controls['password'].touched
+              ? 'error'
+              : ''
+          "
+				/>
+			</div>
+
+			<div class="login-options">
+				<a class="forgot-link" (click)="gotoForgotPassword()">
+					Forgot password?
+				</a>
+			</div>
+
+			<div class="login-actions">
+				<button
+					nz-button
+					nzType="primary"
+					nzShape="round"
+					nzBlock
+					class="btn-login"
+					(click)="handleLogin()"
+					[disabled]="!form.valid"
+				>
+					Sign In
+				</button>
+			</div>
+
+			<div class="signup-prompt">
+				<span nz-typography>Don't have an account?</span>
+				<a (click)="gotoRegister()">Create one</a>
+			</div>
+			<div class="signup-prompt">
+				<span nz-typography>Already have QR code?</span>
+				<a (click)="gotoQR()">Click Here</a>
+			</div>
+		</form>
+	</div>
+</div>

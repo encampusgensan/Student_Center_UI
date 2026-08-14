@@ -1,0 +1,11 @@
+@if (isLoading()) {
+<div class="app-loader-overlay">
+	<nz-spin nzSimple [nzIndicator]="customIndicator"></nz-spin>
+</div>
+}
+
+<ng-template #customIndicator>
+	<img src="../assets/ENC_Favicon.png" alt="Loading" class="app-loader-logo" />
+</ng-template>
+
+<router-outlet></router-outlet>

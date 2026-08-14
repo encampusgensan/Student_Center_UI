@@ -1,0 +1,85 @@
+<div class="qr-code-page">
+	<div class="qr-code-card">
+		<h2 nz-typography class="login-title">Scan to Authenticate</h2>
+		<p nz-typography nzType="secondary" class="login-subtitle">
+			Align your QR code within the scanner frame to log in or out
+		</p>
+
+		<div class="qr-scanner-container">
+			<div class="scanner-window">
+				<div class="scanner-laser"></div>
+
+				<div class="qr-code-wrapper">
+					<zxing-scanner
+						(scanSuccess)="onCodeResult($event)"
+						(scanFailure)="onScanFailure()"
+					></zxing-scanner>
+
+					<div class="scanner-laser"></div>
+				</div>
+			</div>
+		</div>
+
+		<div class="status-container">
+			@if (scanStatus === 'scanning') {
+			<div class="status-box status-scanning">
+				<span nz-icon nzType="loading" nzTheme="outline"></span>
+				<span nz-typography>Waiting for QR code...</span>
+			</div>
+			} @if (scanStatus === 'welcome') {
+			<div class="status-box status-welcome">
+				<div>
+					<h4 nz-typography class="status-title">Welcome!</h4>
+					<p nz-typography nzType="secondary" class="status-desc">
+						Successfully logged in.
+					</p>
+				</div>
+			</div>
+			} @if (scanStatus === 'thank-you') {
+			<div class="status-box status-thanks">
+				<div>
+					<h4 nz-typography class="status-title">Thank You!</h4>
+					<p nz-typography nzType="secondary" class="status-desc">
+						Successfully logged out.
+					</p>
+				</div>
+			</div>
+			} @if (scanStatus === 'not-found') {
+			<div class="status-box status-not-found">
+				<span nz-icon nzType="close-circle" nzTheme="fill"></span>
+				<div class="status-not-found-body">
+					<h4 nz-typography class="status-title">QR Code Not Found</h4>
+					<p nz-typography nzType="secondary" class="status-desc">
+						We couldn't match this code to a member.
+					</p>
+					<div class="status-actions">
+						<button
+							nz-button
+							nzType="default"
+							nzSize="small"
+							(click)="retryScanning()"
+						>
+							Retry Scanning
+						</button>
+						<button
+							nz-button
+							nzType="primary"
+							nzSize="small"
+							(click)="gotoManualLogin()"
+						>
+							Try Manual Login
+						</button>
+					</div>
+				</div>
+			</div>
+			}
+		</div>
+
+		<div class="manual-login-prompt">
+			<span nz-typography>Prefer credentials?</span>
+			<a (click)="gotoManualLogin()" class="manual-link">
+				Click here to login manually
+			</a>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,61 @@
+<div class="qr-page">
+	<nz-card class="qr-card" [nzBordered]="false">
+		<div class="qr-card__body">
+			@if (arrivalStatus() === 'welcome') {
+			<div class="status-box status-welcome">
+				<span nz-icon nzType="check-circle" nzTheme="fill"></span>
+				<div>
+					<h4 nz-typography class="status-title">Welcome!</h4>
+					<p nz-typography nzType="secondary" class="status-desc">
+						Successfully logged in.
+					</p>
+				</div>
+			</div>
+			} @if (arrivalStatus() === 'thank-you') {
+			<div class="status-box status-thanks">
+				<span nz-icon nzType="heart" nzTheme="fill"></span>
+				<div>
+					<h4 nz-typography class="status-title">Thank You!</h4>
+					<p nz-typography nzType="secondary" class="status-desc">
+						Successfully logged out.
+					</p>
+				</div>
+			</div>
+			}
+
+			<h2 class="qr-card__title">Your QR Code</h2>
+			<p class="qr-card__subtitle">
+				Show this at the kiosk or download it to your phone.
+			</p>
+
+			<div class="qr-card__code">
+				<qrcode
+					[qrdata]="qrData()"
+					[width]="220"
+					[errorCorrectionLevel]="'M'"
+					[elementType]="'img'"
+					(qrCodeURL)="onQrCodeURL($event)"
+				></qrcode>
+			</div>
+
+			<div class="qr-card__actions">
+				<a
+					nz-button
+					nzType="primary"
+					[href]="qrDownloadLink()"
+					download="my-qr-code.png"
+				>
+					Download
+				</a>
+
+				<nz-divider nzType="vertical" class="qr-card__divider"></nz-divider>
+
+				<button nz-button nzType="default" (click)="onFinish()">Finish</button>
+			</div>
+
+			<p class="qr-card__countdown">
+				Returning to scan screen in {{ secondsRemaining() }}s
+			</p>
+		</div>
+	</nz-card>
+</div>

@@ -1,0 +1,232 @@
+<div class="register-page">
+	<div class="register-card">
+		<h2 nz-typography class="register-title">Create Your Account</h2>
+
+		<div [formGroup]="form" class="registration-form" autocomplete="off">
+			<div class="form-field">
+				<label nz-typography>First Name</label>
+				<input
+					nz-input
+					appUppercase
+					formControlName="firstName"
+					placeholder="Enter first name"
+					[nzStatus]="
+						form.controls['firstName'].invalid &&
+						form.controls['firstName'].touched
+							? 'error'
+							: ''
+					"
+				/>
+			</div>
+
+			<div class="form-field">
+				<label nz-typography>Middle Name</label>
+				<input
+					nz-input
+					appUppercase
+					formControlName="middleName"
+					placeholder="Enter middle name (optional)"
+				/>
+			</div>
+
+			<div class="form-field">
+				<label nz-typography>Last Name</label>
+				<input
+					nz-input
+					appUppercase
+					formControlName="lastName"
+					placeholder="Enter last name"
+					[nzStatus]="
+						form.controls['lastName'].invalid &&
+						form.controls['lastName'].touched
+							? 'error'
+							: ''
+					"
+				/>
+			</div>
+
+			<div class="form-field">
+				<label nz-typography>Mobile Number</label>
+				<input
+					nz-input
+					formControlName="mobileNum"
+					placeholder="Enter mobile number"
+					[nzStatus]="
+						form.controls['mobileNum'].invalid &&
+						form.controls['mobileNum'].touched
+							? 'error'
+							: ''
+					"
+				/>
+			</div>
+
+			<div class="form-field">
+				<label nz-typography>Birth Date (YYYY-MM-DD)</label>
+				<nz-date-picker
+					formControlName="birthDate"
+					nzFormat="yyyy-MM-dd"
+					nzPlaceHolder="YYYY-MM-DD"
+					nzInputReadOnly="true"
+					[nzStatus]="
+						form.controls['birthDate'].invalid &&
+						form.controls['birthDate'].touched
+							? 'error'
+							: ''
+					"
+				/>
+			</div>
+
+			<div class="form-field">
+				<label nz-typography>Education Level</label>
+				<nz-select
+					formControlName="educationLevel"
+					nzMode="default"
+					nzAllowClear
+					nzPlaceHolder="Please select"
+					[nzStatus]="
+						form.controls['educationLevel'].invalid &&
+						form.controls['educationLevel'].touched
+							? 'error'
+							: ''
+					"
+				>
+					@for (option of educationLevelOptions(); track option.id){
+					<nz-option [nzValue]="option" [nzLabel]="option.name"></nz-option>
+					}
+				</nz-select>
+			</div>
+
+			<div class="form-field">
+				<label nz-typography>School</label>
+				<input
+					nz-input
+					appUppercase
+					formControlName="school"
+					[nzAutocomplete]="schoolAuto"
+					(input)="onSchoolInput($event)"
+					placeholder="Select or type your school"
+				/>
+
+				<nz-autocomplete #schoolAuto>
+					@for (option of schoolFilter(); track option.id) {
+					<nz-auto-option [nzValue]="option" [nzLabel]="option.name">
+						{{ option.name }}
+					</nz-auto-option>
+					}
+				</nz-autocomplete>
+			</div>
+
+			<div class="form-field">
+				<label nz-typography>Email</label>
+				<input
+					nz-input
+					formControlName="email"
+					type="email"
+					placeholder="name@example.com"
+					[nzStatus]="
+						form.controls['email'].invalid &&
+						form.controls['email'].touched
+							? 'error'
+							: ''
+					"
+				/>
+				@if (form.controls['email'].hasError('email') &&
+				form.controls['email'].touched) {
+				<span nz-typography nzType="danger">
+					<small>Email is invalid</small>
+				</span>
+				}
+			</div>
+
+			<div class="form-field">
+				<label nz-typography>Password</label>
+				<input
+					nz-input
+					formControlName="password"
+					type="password"
+					placeholder="Create password"
+					[nzStatus]="
+						form.controls['password'].invalid &&
+						form.controls['password'].touched
+							? 'error'
+							: ''
+					"
+				/>
+				@if (form.controls['password'].touched &&
+				form.controls['password'].invalid) {
+				<ul class="password-hints">
+					@if (form.controls['password'].hasError('required')) {
+					<li nz-typography nzType="danger">
+						<small>Password is required</small>
+					</li>
+					} @if (form.controls['password'].hasError('minlength')) {
+					<li nz-typography nzType="danger">
+						<small>Must be at least 8 characters</small>
+					</li>
+					} @if (form.controls['password'].hasError('requiresUppercase')) {
+					<li nz-typography nzType="danger">
+						<small>Must include an uppercase letter</small>
+					</li>
+					} @if (form.controls['password'].hasError('requiresLowercase')) {
+					<li nz-typography nzType="danger">
+						<small>Must include a lowercase letter</small>
+					</li>
+					} @if (form.controls['password'].hasError('requiresNumber')) {
+					<li nz-typography nzType="danger">
+						<small>Must include a number</small>
+					</li>
+					} @if (form.controls['password'].hasError('requiresSpecialChar')) {
+					<li nz-typography nzType="danger">
+						<small>Must include a special character</small>
+					</li>
+					}
+				</ul>
+				}
+			</div>
+
+			<div class="form-field">
+				<label nz-typography>Confirm Password</label>
+				<input
+					nz-input
+					formControlName="confirmPassword"
+					type="password"
+					placeholder="Confirm password"
+					[nzStatus]="
+						form.controls['confirmPassword'].invalid &&
+						form.controls['confirmPassword'].touched
+							? 'error'
+							: ''
+					"
+				/>
+				@if (form.controls['confirmPassword'].hasError('confirmPassword') &&
+				form.controls['confirmPassword'].touched) {
+				<span nz-typography nzType="danger">
+					<small>Passwords do not match</small>
+				</span>
+				}
+			</div>
+
+			<div class="action-footer">
+				<button
+					nz-button
+					nzType="primary"
+					nzShape="round"
+					class="btn-save"
+					(click)="save()"
+					[disabled]="!form.valid"
+				>
+					Save
+				</button>
+				<button
+					nz-button
+					nzType="default"
+					nzShape="round"
+					class="btn-cancel"
+					(click)="cancel()"
+				>
+					Cancel
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
